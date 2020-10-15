@@ -92,4 +92,13 @@ program
     });
   });
 
+program
+  .command('path <name>')
+  .description('print the absolute path of a template')
+  .action(async name => {
+    const template = store.findByName(name);
+    if (!template) throw new Error(`template '${name}' doesn't exist`);
+    console.log(template.path.yellow);
+  });
+
 program.parseAsync(process.argv).catch(err => console.log(err.message.red));
