@@ -2,7 +2,7 @@
 
 ## Overview
 
-A small command line tool to make it reuse common files like `.gitignore`, `webpack.config.js`, etc...
+A small command line tool to make it easy to reuse common files like `.gitignore`, `webpack.config.js`, etc...
 It will use your configured `$EDITOR` environment variable to edit template files, or if that isn't set, it will use `code` by default. The eventual goal is to make the template files actual Mustache template files and have Inquirer ask you questions and file in the template data (so you could have an `.eslinrc` template that asks you if you want to include the Prettier plugin, for example).
 
 ```sh
