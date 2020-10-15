@@ -14,7 +14,8 @@ function copyTemplate(template, dest) {
 
 /** Opens a template file for editing with the system's default application */
 async function openWithEditor(template) {
-  await exec(`$EDITOR ${template.path}`);
+  const editor = process.env.EDITOR || 'code';
+  await exec(`${editor} ${template.path}`);
 }
 
 module.exports = {
