@@ -8,10 +8,10 @@ It will use your configured `$EDITOR` environment variable to edit template file
 ## Install
 It's not published on npm at the moment, so you can do the following to clone the repo and link it globally:
 ```sh
-$ git clone https://github.com/samkcarlile/pop
-$ cd pop
-$ npm install
-$ npm link
+git clone https://github.com/samkcarlile/pop
+cd pop
+npm install
+npm link
 ```
 
 ## Usage
