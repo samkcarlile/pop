@@ -13,12 +13,15 @@ program.name('pop');
 
 program
   .command('add <name> [dest]')
-  .description('copy a template to the current directory')
-  .action(async (name, target) => {
+  .description('execute and write a template to the current directory')
+  .action(async (name, dest) => {
     const template = store.findByName(name);
     if (!template) throw new Error(`template '${name}' doesn't exist`);
 
-    const newFile = utils.copyTemplate(template, target || template.file);
+    const newFile = await utils.executeTemplate(
+      template,
+      dest || template.file
+    );
     console.log(`✨ wrote template ${name} to`.yellow, newFile.green);
   });
 
