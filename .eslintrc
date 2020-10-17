@@ -1,5 +1,8 @@
 {
-  "extends": ["problems", "prettier"],
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "extends": ["problems", "plugin:@typescript-eslint/recommended", "prettier"],
   "env": {
     "node": true
   },
@@ -9,5 +12,6 @@
   },
   "rules": {
     "no-console": "off"
-  }
+  },
+  "ignorePatterns": ["dist", "node_modules", "grammar.js"]
 }
