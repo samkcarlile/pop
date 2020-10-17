@@ -5,7 +5,10 @@
   "main": "./dist/index.js",
   "bin": "./dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "pnpm grammar:build && pnpm ts:build",
+    "ts:build": "tsc",
+    "grammar:build": "nearleyc ./src/parser/qemplate.ne -o ./src/parser/index.ts",
+    "grammar:watch": "nodemon --exec \"pnpm grammar:build\" -w ./src/parser/qemplate.ne",
     "start": "node index.js"
   },
   "author": "Sam Carlile <samkcarlile@gmail.com>",
@@ -30,6 +33,7 @@
     "eslint": "^7.11.0",
     "eslint-config-prettier": "^6.12.0",
     "eslint-config-problems": "^5.0.0",
+    "nodemon": "^2.0.5",
     "typescript": "^4.0.3"
   }
 }

@@ -13,7 +13,7 @@ const template = `
   }}
   "parser": "{{ this }}",
   {{ /choose }}
-`;
+}`;
 
 const simple = `
 {{ choose > which parser? 
@@ -42,15 +42,23 @@ const lexer = moo.states({
   // inside an expression {{ ..... }}
   exp: {
     expend: { match: '}}', lineBreaks: true, pop: 1 },
-    fn: { match: /\s*\w+\s*/, value: trim },
+    fnblock: { match: /\s*\w+\s*/, value: trim },
     rarrow: { match: /\s*>\s*/, value: trim, next: 'args' },
     blockend: { match: /\s*\/\w+\s*/, value: s => s.trim().slice(1) },
+  },
+
+  // inside an expression block {{ exp }} ..... {{ /exp }}
+  block: {
+    text: {
+      match: /(?:[^{]|{[^{]|\s)+/,
+      lineBreaks: true,
+    },
   },
 
   // inside a function within an expression
   args: {
     expend: { match: '}}', lineBreaks: true, pop: 1 },
-    sentence: {
+    value: {
       match: /(?:[^[\]{}])+\s?/,
       value: trim,
       lineBreaks: true,
@@ -83,12 +91,9 @@ const lexer = moo.states({
       value: s => s.trim().replace(',', ''),
     },
   },
-
-  // inside an expression block {{ exp }} ..... {{ /exp }}
-  block: {},
 });
 
-lexer.reset(template);
+lexer.reset(simple);
 const tokens = [];
 let token;
 while ((token = lexer.next()))
