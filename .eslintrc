@@ -15,7 +15,7 @@
     "@typescript-eslint/explicit-module-boundary-types": "off"
   },
   "ignorePatterns": [
-    "/src/parser/index.ts",
+    "/src/parser/parser.ts",
     "dist",
     "node_modules",
     "grammar.js",

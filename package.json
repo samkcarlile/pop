@@ -7,8 +7,8 @@
   "scripts": {
     "build": "pnpm grammar:build && pnpm ts:build",
     "ts:build": "tsc",
-    "grammar:build": "nearleyc ./src/parser/qemplate.ne -o ./src/parser/index.ts",
-    "grammar:watch": "nodemon --exec \"pnpm grammar:build\" -w ./src/parser/qemplate.ne",
+    "grammar:build": "nearleyc ./src/parser/grammar.ne -o ./src/parser/parser.ts",
+    "grammar:watch": "nodemon --exec \"pnpm grammar:build\" -w ./src/parser/grammar.ne",
     "start": "node index.js"
   },
   "author": "Sam Carlile <samkcarlile@gmail.com>",

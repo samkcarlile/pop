@@ -1,3 +1,7 @@
+/**
+ * @module PostProcessors
+ */
+
 export const text = ([token]) => {
   return token.value;
 };

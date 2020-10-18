@@ -1,5 +1,5 @@
 import nearely from 'nearley';
-import grammar from './index';
+import grammar from './parser';
 
 const input = `I like the 
 {{ choose > Pick an animal: [ *dog : 🐶, cat, mouse, gorilla : 🦍 ] }} 
