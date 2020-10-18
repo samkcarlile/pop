@@ -2,41 +2,72 @@
 
 @{%
 import lexer from '../lexer/index';
+import * as post from './post';
 %}
 
 @lexer lexer
 
-main -> (Text | Expression):*
+main -> (Text | PromptBlock):*
+  {% post.main %}
 
-Text -> %text
+Text -> %text {% post.text %}
+
+PromptBlock 
+  -> PromptExpr BlockBody EndExpr
+    {% post.promptBlock %}
+
+BlockBody 
+  -> (Text | IdentExpr | HelperExpr ):+
+    {% post.blockBody %}
+
+# TODO: helper blocks...this may require a minor restructure
+# HelperBlock
+#   -> HelperExpr BlockBody EndExpr
 
 # an expression is always wrapped like this: {{ expression }}
-inExp[X] -> %expStart $X %expEnd
-Expression -> IdentExpr
-            | HandlebarsExpr
-            | FunctionExpr
-            | BlockEndExpr
+inExp[X] 
+  -> %expStart $X %expEnd
+    {% post._expression %}
 
-IdentExpr -> inExp[Ident]
+PromptExpr 
+  -> inExp[Prompt]
+    {% post.promptExpression %}
 
-# handlerbars expressions look like this: {{#helper}}
-# oddly enough, whitespace is important here! (we don't check for it though 😳)
-HandlebarsExpr -> inExp[%hash Ident]
+IdentExpr 
+  -> inExp[Ident]
+    {% post.identExpression %}
 
-FunctionExpr -> inExp[Function]
+# helper expressions look like this: {{ #helper }}
+HelperExpr 
+  -> inExp[%hash Ident]
+    {% post.helperExpression %}
 
-# Block end expressions look like this: {{ /block }}
-BlockEndExpr -> inExp[%slash Ident]
+# End expressions look like this: {{ /block }}
+EndExpr 
+  -> inExp[%slash Ident]
+    {% post.endExpression %}
 
-Function -> Ident %arrow (Dictionary | Value):+
+Prompt 
+  -> Ident %arrow (Dictionary | Value):+
+    {% post.prompt %}
 
-Dictionary -> %dictStart (NamedField | Field):* %dictEnd
+# dictionaries consist of named and unnamed fields
+Dictionary 
+  -> %dictStart (NamedField | Field):* %dictEnd
+    {% post.dictionary %}
 
-NamedField -> Field %colon Value
+# a named field looks like this: 
+NamedField 
+  -> Field %colon Value {% post.namedField %}
 
-Field -> Value
-       | %star Value
+# a field can be indicated as default like this: *fieldName
+# or not default like this: fieldName
+Field 
+  -> Value {% post.field %}
+   | %star Value {% post.defaultField %}
 
-Ident -> %identifier
+Ident 
+  -> %identifier {% post.identifier %}
 
-Value -> %value
+Value 
+  -> %value {% post.value %}
