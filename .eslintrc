@@ -2,7 +2,7 @@
   "root": true,
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint"],
-  "extends": ["problems", "plugin:@typescript-eslint/recommended", "prettier"],
+  "extends": ["plugin:@typescript-eslint/recommended", "problems", "prettier"],
   "env": {
     "node": true
   },
@@ -17,7 +17,6 @@
   "ignorePatterns": [
     "/src/parser/parser.ts",
     "dist",
-    "node_modules",
     "grammar.js",
     "index.js",
     "storage.js"

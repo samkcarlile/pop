@@ -7,6 +7,7 @@
   "scripts": {
     "build": "pnpm grammar:build && pnpm ts:build",
     "ts:build": "tsc",
+    "ts:run": "ts-node",
     "grammar:build": "nearleyc ./src/parser/grammar.ne -o ./src/parser/parser.ts",
     "grammar:watch": "nodemon --exec \"pnpm grammar:build\" -w ./src/parser/grammar.ne",
     "start": "node index.js"
@@ -34,6 +35,7 @@
     "eslint-config-prettier": "^6.12.0",
     "eslint-config-problems": "^5.0.0",
     "nodemon": "^2.0.5",
+    "ts-node": "^9.0.0",
     "typescript": "^4.0.3"
   }
 }
