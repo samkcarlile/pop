@@ -8,7 +8,7 @@ const dictionary: Rules = {
     value: s => s.trim(),
     pop: 1,
   },
-  [Token.StarDefault]: {
+  [Token.Star]: {
     match: /\s*\*/,
     value: s => s.trim(),
   },

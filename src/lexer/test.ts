@@ -64,6 +64,6 @@ const template3 = `
 
 `;
 
-lexer.reset(template2);
+lexer.reset(template3);
 
 const tokens = Array.from(lexer).map(({ value, type }) => ({ type, value })); // ?

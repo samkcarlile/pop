@@ -6,16 +6,37 @@ import lexer from '../lexer/index';
 
 @lexer lexer
 
-template -> (text | expression):*
+main -> (Text | Expression):*
 
-text -> %text
+Text -> %text
 
-inExpression[EXP] -> %expStart $EXP %expEnd
-expression -> 
-    inExpression[%blockStart]
-  | inExpression[%blockEnd]
-  | inExpression[function]
+# an expression is always wrapped like this: {{ expression }}
+inExp[X] -> %expStart $X %expEnd
+Expression -> IdentExpr
+            | HandlebarsExpr
+            | FunctionExpr
+            | BlockEndExpr
 
-function -> %blockStart %arrow
+IdentExpr -> inExp[Ident]
 
-# NOTE: this is very incomplete
+# handlerbars expressions look like this: {{#helper}}
+# oddly enough, whitespace is important here! (we don't check for it though 😳)
+HandlebarsExpr -> inExp[%hash Ident]
+
+FunctionExpr -> inExp[Function]
+
+# Block end expressions look like this: {{ /block }}
+BlockEndExpr -> inExp[%slash Ident]
+
+Function -> Ident %arrow (Dictionary | Value):+
+
+Dictionary -> %dictStart (NamedField | Field):* %dictEnd
+
+NamedField -> Field %colon Value
+
+Field -> Value
+       | %star Value
+
+Ident -> %identifier
+
+Value -> %value

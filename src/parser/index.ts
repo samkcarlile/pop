@@ -4,11 +4,17 @@
 // @ts-ignore
 function id(d: any[]): any { return d[0]; }
 declare var text: any;
-declare var blockStart: any;
 declare var expStart: any;
 declare var expEnd: any;
-declare var blockEnd: any;
+declare var hash: any;
+declare var slash: any;
 declare var arrow: any;
+declare var dictStart: any;
+declare var dictEnd: any;
+declare var colon: any;
+declare var star: any;
+declare var identifier: any;
+declare var value: any;
 
 import lexer from '../lexer/index';
 
@@ -41,24 +47,47 @@ interface Grammar {
 const grammar: Grammar = {
   Lexer: lexer,
   ParserRules: [
-    {"name": "template$ebnf$1", "symbols": []},
-    {"name": "template$ebnf$1$subexpression$1", "symbols": ["text"]},
-    {"name": "template$ebnf$1$subexpression$1", "symbols": ["expression"]},
-    {"name": "template$ebnf$1", "symbols": ["template$ebnf$1", "template$ebnf$1$subexpression$1"], "postprocess": (d) => d[0].concat([d[1]])},
-    {"name": "template", "symbols": ["template$ebnf$1"]},
-    {"name": "text", "symbols": [(lexer.has("text") ? {type: "text"} : text)]},
-    {"name": "expression$macrocall$2", "symbols": [(lexer.has("blockStart") ? {type: "blockStart"} : blockStart)]},
-    {"name": "expression$macrocall$1", "symbols": [(lexer.has("expStart") ? {type: "expStart"} : expStart), "expression$macrocall$2", (lexer.has("expEnd") ? {type: "expEnd"} : expEnd)]},
-    {"name": "expression", "symbols": ["expression$macrocall$1"]},
-    {"name": "expression$macrocall$4", "symbols": [(lexer.has("blockEnd") ? {type: "blockEnd"} : blockEnd)]},
-    {"name": "expression$macrocall$3", "symbols": [(lexer.has("expStart") ? {type: "expStart"} : expStart), "expression$macrocall$4", (lexer.has("expEnd") ? {type: "expEnd"} : expEnd)]},
-    {"name": "expression", "symbols": ["expression$macrocall$3"]},
-    {"name": "expression$macrocall$6", "symbols": ["function"]},
-    {"name": "expression$macrocall$5", "symbols": [(lexer.has("expStart") ? {type: "expStart"} : expStart), "expression$macrocall$6", (lexer.has("expEnd") ? {type: "expEnd"} : expEnd)]},
-    {"name": "expression", "symbols": ["expression$macrocall$5"]},
-    {"name": "function", "symbols": [(lexer.has("blockStart") ? {type: "blockStart"} : blockStart), (lexer.has("arrow") ? {type: "arrow"} : arrow)]}
+    {"name": "main$ebnf$1", "symbols": []},
+    {"name": "main$ebnf$1$subexpression$1", "symbols": ["Text"]},
+    {"name": "main$ebnf$1$subexpression$1", "symbols": ["Expression"]},
+    {"name": "main$ebnf$1", "symbols": ["main$ebnf$1", "main$ebnf$1$subexpression$1"], "postprocess": (d) => d[0].concat([d[1]])},
+    {"name": "main", "symbols": ["main$ebnf$1"]},
+    {"name": "Text", "symbols": [(lexer.has("text") ? {type: "text"} : text)]},
+    {"name": "Expression", "symbols": ["IdentExpr"]},
+    {"name": "Expression", "symbols": ["HandlebarsExpr"]},
+    {"name": "Expression", "symbols": ["FunctionExpr"]},
+    {"name": "Expression", "symbols": ["BlockEndExpr"]},
+    {"name": "IdentExpr$macrocall$2", "symbols": ["Ident"]},
+    {"name": "IdentExpr$macrocall$1", "symbols": [(lexer.has("expStart") ? {type: "expStart"} : expStart), "IdentExpr$macrocall$2", (lexer.has("expEnd") ? {type: "expEnd"} : expEnd)]},
+    {"name": "IdentExpr", "symbols": ["IdentExpr$macrocall$1"]},
+    {"name": "HandlebarsExpr$macrocall$2", "symbols": [(lexer.has("hash") ? {type: "hash"} : hash), "Ident"]},
+    {"name": "HandlebarsExpr$macrocall$1", "symbols": [(lexer.has("expStart") ? {type: "expStart"} : expStart), "HandlebarsExpr$macrocall$2", (lexer.has("expEnd") ? {type: "expEnd"} : expEnd)]},
+    {"name": "HandlebarsExpr", "symbols": ["HandlebarsExpr$macrocall$1"]},
+    {"name": "FunctionExpr$macrocall$2", "symbols": ["Function"]},
+    {"name": "FunctionExpr$macrocall$1", "symbols": [(lexer.has("expStart") ? {type: "expStart"} : expStart), "FunctionExpr$macrocall$2", (lexer.has("expEnd") ? {type: "expEnd"} : expEnd)]},
+    {"name": "FunctionExpr", "symbols": ["FunctionExpr$macrocall$1"]},
+    {"name": "BlockEndExpr$macrocall$2", "symbols": [(lexer.has("slash") ? {type: "slash"} : slash), "Ident"]},
+    {"name": "BlockEndExpr$macrocall$1", "symbols": [(lexer.has("expStart") ? {type: "expStart"} : expStart), "BlockEndExpr$macrocall$2", (lexer.has("expEnd") ? {type: "expEnd"} : expEnd)]},
+    {"name": "BlockEndExpr", "symbols": ["BlockEndExpr$macrocall$1"]},
+    {"name": "Function$ebnf$1$subexpression$1", "symbols": ["Dictionary"]},
+    {"name": "Function$ebnf$1$subexpression$1", "symbols": ["Value"]},
+    {"name": "Function$ebnf$1", "symbols": ["Function$ebnf$1$subexpression$1"]},
+    {"name": "Function$ebnf$1$subexpression$2", "symbols": ["Dictionary"]},
+    {"name": "Function$ebnf$1$subexpression$2", "symbols": ["Value"]},
+    {"name": "Function$ebnf$1", "symbols": ["Function$ebnf$1", "Function$ebnf$1$subexpression$2"], "postprocess": (d) => d[0].concat([d[1]])},
+    {"name": "Function", "symbols": ["Ident", (lexer.has("arrow") ? {type: "arrow"} : arrow), "Function$ebnf$1"]},
+    {"name": "Dictionary$ebnf$1", "symbols": []},
+    {"name": "Dictionary$ebnf$1$subexpression$1", "symbols": ["NamedField"]},
+    {"name": "Dictionary$ebnf$1$subexpression$1", "symbols": ["Field"]},
+    {"name": "Dictionary$ebnf$1", "symbols": ["Dictionary$ebnf$1", "Dictionary$ebnf$1$subexpression$1"], "postprocess": (d) => d[0].concat([d[1]])},
+    {"name": "Dictionary", "symbols": [(lexer.has("dictStart") ? {type: "dictStart"} : dictStart), "Dictionary$ebnf$1", (lexer.has("dictEnd") ? {type: "dictEnd"} : dictEnd)]},
+    {"name": "NamedField", "symbols": ["Field", (lexer.has("colon") ? {type: "colon"} : colon), "Value"]},
+    {"name": "Field", "symbols": ["Value"]},
+    {"name": "Field", "symbols": [(lexer.has("star") ? {type: "star"} : star), "Value"]},
+    {"name": "Ident", "symbols": [(lexer.has("identifier") ? {type: "identifier"} : identifier)]},
+    {"name": "Value", "symbols": [(lexer.has("value") ? {type: "value"} : value)]}
   ],
-  ParserStart: "template",
+  ParserStart: "main",
 };
 
 export default grammar;
